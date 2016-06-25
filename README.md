@@ -15,11 +15,11 @@ This uses a WIP branch of graphql-ruby: https://github.com/rmosolgo/graphql-ruby
   - `$ open http://localhost:3000/` (visit the app)
 - ActionCable transports
   - Send GraphQL with ActionCable, Rails 5's new websocket library
-  - http://localhost:3000/action_cable_transport
-  - Server: app/channels/graphql_channel.rb
-  - Client: app/assets/javascripts/channels/graphql_channel.js
+  - `http://localhost:3000/action_cable_transport`
+  - Server: [app/channels/graphql_channel.rb](https://github.com/rmosolgo/graphql-ruby-stream-defer-demo/blob/master/app/channels/graphql_channel.rb)
+  - Client: [app/assets/javascripts/channels/graphql_channel.js](https://github.com/rmosolgo/graphql-ruby-stream-defer-demo/blob/master/app/assets/javascripts/channels/graphql_channel.js)
 - `Transfer-Encoding: chunked` transport
   - Return `\n\n`-delimited chunks over a streaming HTTP response
-  - http://localhost:3000/chunked_transport
-  - Server: app/controllers/chunked_graphqls_controller.rb
-  - Client: app/assets/javascripts/graphql_fetch.js
+  - `http://localhost:3000/chunked_transport`
+  - Server: [app/controllers/chunked_graphqls_controller.rb](https://github.com/rmosolgo/graphql-ruby-stream-defer-demo/blob/master/app/controllers/chunked_graphqls_controller.rb)
+  - Client: [app/assets/javascripts/graphql_fetch.js](https://github.com/rmosolgo/graphql-ruby-stream-defer-demo/blob/master/app/assets/javascripts/graphql_fetch.js)
