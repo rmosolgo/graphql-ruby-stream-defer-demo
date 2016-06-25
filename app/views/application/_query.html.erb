@@ -1,0 +1,20 @@
+<div style="display: flex;">
+  <div style="flex: 1 1 100px; padding: 5px;">
+    <h2>Query</h2>
+    <p style="margin: 5px;">
+    <textarea id="query" style="font-family: monospace; width: 100%;" rows="7">{
+  posts @stream {
+    title
+    body @defer
+  }
+}</textarea>
+    </p>
+    <button id="send">Send</button>
+  </div>
+  <div style="flex: 1 1 250px; padding: 5px;">
+    <h2>Response</h2>
+    <p style="margin: 5px;">
+    <pre id="response" style="width: 100%"></pre>
+    </p>
+  </div>
+</div>
