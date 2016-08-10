@@ -3,17 +3,17 @@
 <script>
  $(function() {
    // Handle button clicks by sending the query to the server
-   $("#send").on("click", function() {
-     var queryString = $("#query").val()
+   $(".send").on("click", function() {
+     var container = $(this).closest(".query-container")
+     var queryString = container.find(".query").val()
 
      // Handle incoming data by rendering it into the response window
-     var onData = function(data) {
+     var onResponse = function(data) {
        var resultString = JSON.stringify(data, undefined, 2)
-       $("#response").text(resultString)
+       container.find(".response").text(resultString)
      }
 
-     GraphQLFetch.fetch(queryString, {}, onData, onData)
-
+     StreamingGraphQLClient.fetch("/chunked_graphql", queryString, {}, onResponse)
    })
  })
 </script>

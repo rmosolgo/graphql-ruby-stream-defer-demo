@@ -13,5 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require graphql-streaming/streaming_graphql_client
+//= require graphql-streaming/graphql_channel
 //= require ./cable
-//= require ./graphql_fetch

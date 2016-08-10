@@ -60,11 +60,18 @@ GIT
       thor (>= 0.18.1, < 2.0)
 
 GIT
+  remote: git://github.com/rmosolgo/graphql-streaming.git
+  revision: ceb8a01fc0515b69add886f31435aa3bdeb2336e
+  specs:
+    graphql-streaming (0.1.0)
+      graphql
+
+GIT
   remote: git://github.com/rmosolgo/graphql.git
-  revision: d883d55fe4539a54f1388d60384535f9635348bf
+  revision: 176f155a1a49185051fc9eaadd76bf2539f4acd9
   branch: defer-directive
   specs:
-    graphql (0.15.0)
+    graphql (0.18.1)
 
 GEM
   remote: https://rubygems.org/
@@ -168,6 +175,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   graphiql-rails
   graphql!
+  graphql-streaming!
   jbuilder (~> 2.0)
   jquery-rails
   listen (~> 3.0.5)

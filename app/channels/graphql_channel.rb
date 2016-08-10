@@ -7,23 +7,26 @@ class GraphqlChannel <  ApplicationCable::Channel
     query_id = data["query_id"]
     query_string = data["query"]
     variables = ensure_hash(data["variables"] || {})
+    context = {}
+
     # This object emits patches
-    collector = GraphQLCollector.new(query_id, channel_name)
-    context = {
-      subscriber: GraphQLSubscriber.new(self, query_id, query_string),
-      collector: collector
-    }
-    result = Schema.execute(query_string, variables: variables, context: context)
-    if !collector.patched?
-      payload = {
-        result: result,
-        query_id: query_id,
-      }
-      ActionCable.server.broadcast(channel_name, payload)
+    context[:collector] = GraphQL::Streaming::ActionCableCollector.new(query_id, ActionCable.server.broadcaster_for(channel_name))
+
+    # This re-evals the query in response to triggers
+    context[:subscriber] = GraphQL::Streaming::ActionCableSubscriber.new(self, query_id) do
+      Schema.execute(query_string, variables: variables, context: context)
+    end
+
+    Schema.execute(query_string, variables: variables, context: context)
+
+    # If there are no ongoing subscriptions,
+    # tell the client to stop listening for patches
+    if !context[:subscriber].subscribed?
+      context[:collector].close
     end
   rescue StandardError => err
     puts "--- FETCH ---"
-    puts err
+    raise err
   end
 
   private
@@ -41,66 +44,5 @@ class GraphqlChannel <  ApplicationCable::Channel
 
   def channel_name
     "graphql_#{current_user}"
-  end
-
-  class GraphQLRegistry
-    def trigger(pubsub_handle)
-      ActionCable.server.broadcast("graphql_subscription_#{pubsub_handle}", {})
-    end
-  end
-
-  REGISTRY = GraphQLRegistry.new
-
-  class GraphQLCollector
-    def initialize(query_id, channel_name)
-      @query_id = query_id
-      @channel_name = channel_name
-      @was_patched = false
-    end
-
-    def patch(path:, value:)
-      @was_patched = true
-      payload = {
-        patch: {
-          path: path,
-          value: value,
-        },
-        query_id: @query_id,
-      }
-      ActionCable.server.broadcast(@channel_name, payload)
-    end
-
-    def patched?
-      @was_patched
-    end
-  end
-
-  class GraphQLSubscriber
-    def initialize(channel, query_id, query_string)
-      @channel = channel
-      @query_id = query_id
-      @query_string = query_string
-    end
-
-    def register(pubsub_handle)
-      @channel.stream_from("graphql_subscription_#{pubsub_handle}") do |message|
-        begin
-          puts "SUBSCRIPTION EXEC => #{pubsub_handle}"
-          result = Schema.execute(@query_string, variables: {})
-          payload = {
-            result: result,
-            query_id: @query_id,
-          }
-          # TODO: any option other than this hack?
-          @channel.send(:transmit, payload)
-        rescue StandardError => err
-          puts "--- TRANSMIT ---"
-          puts err
-        end
-      end
-    rescue StandardError => err
-      puts "--- REGISTER ---"
-      puts err
-    end
   end
 end

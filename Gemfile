@@ -8,6 +8,9 @@ gem 'rails',
 gem "graphql",
   github: "rmosolgo/graphql",
   branch: "defer-directive"
+gem "graphql-streaming",
+  github: "rmosolgo/graphql-streaming"
+
 gem "graphiql-rails"
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
